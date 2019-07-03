@@ -15,12 +15,12 @@
             <el-table-column  prop="name" label="页面名称" width="120" ></el-table-column>
             <el-table-column label="功能" >
               <template slot-scope="scope">
-                <el-checkbox class="checkbox" v-model="v2.status" v-for="(v2,k2) in scope.row.child" :key="k2">{{v2.cn_name}}</el-checkbox>
+                <el-checkbox class="checkbox" v-model="v2.status" v-for="(v2,k2) in scope.row.child" :true-label="1" :false-label="0" :key="k2">{{v2.status}}{{v2.cn_name}}</el-checkbox>
               </template>
             </el-table-column>
             <el-table-column fixed="right" label="操作" width="100" >
               <template slot-scope="scope" >
-                <el-switch  v-model="scope.row.status"> </el-switch>
+                <el-switch  v-model="scope.row.status" active-value="1" inactive-value="0"> </el-switch>
               </template>
             </el-table-column>
           </el-table>
@@ -66,11 +66,11 @@ export default {
         for (let i = 0; i < len; i++) {
             let len1 = list[i]._child.length
             for (let x = 0; x < len1; x++) {
-                if (list[i]._child[x].status) {
+                if (list[i]._child[x].status == 1) {
                     permissions[list[i]._child[x].id] = {}
                     let len2 = list[i]._child[x].child.length
                     for (let y = 0; y < len2; y++) {
-                      if(list[i]._child[x].child[y].status){
+                      if(list[i]._child[x].child[y].status == 1){
                         permissions[list[i]._child[x].id][list[i]._child[x].child[y].id] = 1
                       } else{
                         permissions[list[i]._child[x].id][list[i]._child[x].child[y].id] = 0
@@ -89,30 +89,9 @@ export default {
         },
         url: 'admin/getpermissionslist',
         success(res){
-          that.menuList = that.disMenuList(res.data)
+          that.menuList = res.data
         }
       })
-    },
-    disMenuList(data = []){
-      let len = data.length,list = data;
-      if(len === 0) return [];
-      for(let i =0;i<len;i++){
-        for(let x = 0,len1 = list[i]._child.length;x < len1;x++){
-          if(list[i]._child[x].status == 1){
-            list[i]._child[x].status = true
-          } else {
-            list[i]._child[x].status = false
-          }
-          for(let y = 0,len2 = list[i]._child[x].child.length;y < len2;y++){
-              if(list[i]._child[x].child[y].status == 1){
-                list[i]._child[x].child[y].status = true
-              } else {
-                list[i]._child[x].child[y].status = false
-              }
-        }
-        }
-      }
-      return list
     }
   }
 

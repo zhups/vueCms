@@ -5,8 +5,8 @@
         <el-breadcrumb-item>金融管理</el-breadcrumb-item>
         <el-breadcrumb-item>充值管理</el-breadcrumb-item>
       </el-breadcrumb>
-      <el-button class="add fr" type="primary" icon="el-icon-plus" @click="toggleCard(true)">充值</el-button>
-    </div>
+      <el-button class="add fr" type="primary" icon="el-icon-plus" @click="showCard(true)">充值</el-button>
+  </div>
 
     <v-screen :screen="screenQuery" @query="onQuery" ></v-screen>
 
@@ -29,19 +29,75 @@
         </template>
       </el-table-column>
     </el-table>
-    <div class="flex-cen pagination">
-      <el-pagination :hide-on-single-page="true" background @current-change="pageChange" ref="pagination"  layout="prev, pager, next" :total="total"> </el-pagination>
-    </div>
+    <v-pagination @pageChange="pageChange" :total="total"></v-pagination>
+
+    <v-card name='充值管理' width="120" :cardStatus="cardStatus" :ruleType="ruleType" :ruleForm="ruleForm" :rules="rules" @sumbit="sumbit" @hideCard="hideCard"></v-card>
+
 
   </div>
 </template>
 
 <script>
 import {getStype, getIdentity, getStatus} from '../../../assets/js/common'
-import vScreen from '../../common/screen'
+import vScreen from '../../component/screen'
+import vPagination from '../../component/pagination'
+import vCard from '../../component/card'
 export default {
   data(){
     return {
+      cardStatus:false,
+      ruleForm:{},
+      rules:['passwd','nick_name','mobile','credit','stype'],
+      ruleType:{
+        'passwd':{
+          type:'input',
+          inpType:'password',
+          label:'cms密码',
+          placeholder:'请输入cms登录密码'
+        },
+        'nick_name':{
+          type:'input',
+          label:'前端用户昵称',
+          placeholder:'请输入前端用户昵称'
+        },
+        'mobile':{
+          type:'number',
+          label:'前台用户手机号',
+          placeholder:'请输入前台用户手机号'
+        },
+        'credit':{
+          type:'number',
+          label:'充值金额',
+          placeholder:'请输入充值金额'
+        },
+        'stype':{
+          type:'select',
+          label:'充值类型',
+          placeholder:'请选择充值类型',
+          option:[ {
+            value: 1,
+            label: '商票'
+          }, {
+              value: 2,
+              label: '佣金'
+          }, {
+              value: 3,
+              label: '积分'
+          }]
+        },
+        'message':{
+          type:'input',
+          inpType:'textarea',
+          label:'前端描述',
+          placeholder:'请输入前端描述'
+        },
+        'admin_message':{
+          type:'input',
+          inpType:'textarea',
+          label:'后端描述',
+          placeholder:'请输入后端描述'
+        }
+      },
       screen:{
         page:1,
         page_num:10
@@ -110,15 +166,40 @@ export default {
     }
   },
   components:{
-      vScreen
+      vScreen,
+      vPagination,
+      vCard
   },
   mounted(){
     this.getAdminRemittance()
   },
   methods: {
+    showCard(){
+      this.cardStatus = true
+    },
+    hideCard(data){
+      this.cardStatus = false
+    },
+    sumbit(data){
+      console.log(data.ruleForm)
+      let that =this
+      that.$request({
+        data: data.ruleForm,
+        form:1,
+        url: 'admin/adminRemittance',
+        success(res){
+          that.cardStatus = false
+          that.ruleForm = {}
+          that.getAdminRemittance();
+        }
+      })
+    },
     onQuery(screen){
-      Object.prototype.push.apply(this.screen , screen ); 
+      // Object.prototype.push.apply(this.screen , screen ); 
+      // Object.apply(this.screen,screen)
+      this.screen = screen
       this.screen.page = 1
+      // console.log(this.screen)
       this.getAdminRemittance()
     },
     auditAdminRemittance(id = '',status = ''){
@@ -147,8 +228,8 @@ export default {
         }
       })
     },
-    pageChange(val){
-        this.screen.page = val
+    pageChange(obj){
+        this.screen.page = obj.page
         this.getAdminRemittance()
     },
     disAdminRemittance(data = []){

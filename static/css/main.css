@@ -243,6 +243,8 @@ a {
 }
 
 .box-card {
+    max-height: 100%;
+    overflow: auto;
     margin-bottom: 20px;
 }
 

@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import tIcon from '../../common/tableIcon';
+import tIcon from '../../component/tableIcon';
 export default {
   data(){
     return {

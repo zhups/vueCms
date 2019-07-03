@@ -115,7 +115,7 @@ export default {
   }
 }
 </script>
-<style lang="less" scoped>
+<style scoped>
 .el-icon-plus {
       border: 1px dashed #d9d9d9;
       border-radius: 6px;
@@ -123,7 +123,7 @@ export default {
       position: relative;
       overflow: hidden;
 }
-  .el-icon-plus:hover {
+.el-icon-plus:hover {
   border-color: #409EFF;
 }
 .avatar-uploader-icon {

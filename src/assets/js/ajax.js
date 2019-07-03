@@ -154,6 +154,9 @@ function successHint(type = 0) {
         case 3:
             text = '修改成功'
             break;
+        case 4:
+            text = '审核成功'
+            break;
     }
     zMessage(text, 'success')
 }
@@ -187,7 +190,7 @@ let request = function(params = {}) {
                 return
             }
 
-            if (res.code == "200") {
+            if (res.code == "200" || res.code == '3000') {
                 typeof params.success == 'function' ? params.success(res) : '';
                 successHint(params.form)
             } else if (res.code == "3100") {

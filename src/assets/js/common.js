@@ -90,10 +90,44 @@ function getStatus(n) {
     return text
 }
 
+function getSexText(n) {
+    let text = ''
+    switch (parseInt(n)) {
+        case 1:
+            text = '男'
+            break;
+        case 2:
+            text = '女'
+            break;
+    }
+    return text
+}
+
+function getShopApplyStatus(n) {
+    let text = ''
+    switch (parseInt(n)) {
+        case 1:
+            text = '提交申请中'
+            break;
+        case 2:
+            text = '财务审核通过'
+            break;
+        case 3:
+            text = '经理审核通过'
+            break;
+        case 4:
+            text = '审核不通过'
+            break;
+    }
+    return text
+}
+
 export {
     downloadIamge,
     tableToExcel,
     getStype,
     getIdentity,
-    getStatus
+    getStatus,
+    getSexText,
+    getShopApplyStatus
 }
