@@ -70,6 +70,7 @@ export default {
             arr[i].actypeText = this.getActypeText(arr[i].actype)
             arr[i].userTypeText = this.getTypeText(arr[i].user_type)
             arr[i].payTypetext = this.getPayTypeText(arr[i].pay_type)
+            arr[i].fromuser ? arr[i].fromuser : arr[i].fromuser = {}
             arr[i].fromuser.identityText = getIdentity(arr[i].fromuser.user_identity)
         }
         return arr

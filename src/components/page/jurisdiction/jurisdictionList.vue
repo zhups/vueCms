@@ -34,7 +34,7 @@
     </el-collapse>
     </div>
 
-     <div class="cen-card" v-if="modal.updateMenu">
+    <div class="cen-card" v-if="modal.updateMenu">
       <el-card class="box-card" >
         <div slot="header" class="clearfix">
             <span>菜单名称修改</span>

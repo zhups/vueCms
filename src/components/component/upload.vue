@@ -1,48 +1,108 @@
 <template>
     <div class="" :id='num'>
-        <img v-if="imaegUrl" :src="imaegUrl" @click="fileShow" class="avatar">
-        <i v-else class="el-icon-plus avatar-uploader-icon"  @click="fileShow"></i>
-        <input class="hide" type="file" @change="fileChange" name="" :id="'fileinp'+num">
+        <div v-if="imaegList.length > 0" class="imgList">
+          <div v-for="(v,k) in imaegList" :key="k" class="imgli">
+            <span v-if="multiple" class="imgDel" @click="delImg(v[name] || v['image'])">X</span>
+            <img  :src="v[name] || v['image']" @click="fileShow" class="avatar">
+          </div>
+        </div>
+
+        <i v-if="imaegList.length === 0 && !multiple" class="el-icon-plus avatar-uploader-icon"  @click="fileShow"></i>
+        <i v-if="multiple" class="el-icon-plus avatar-uploader-icon"  @click="fileShow"></i>
+
+        <input class="hide" type="file" :multiple="multiple"  @change="fileChange" name="" :id="'fileinp'+num">
     </div>
 </template>
 
 <script>
-
+import {imageDeal} from '../../assets/js/common';
 export default {
-  props: ['num','image'],
+  props: ['num','image','name','multiple'],
   data(){
     return{
-      imaegUrl:''
+      imaegList:[]
     }
   },
   watch: {
     'image': function(newVal){
-        this.imaegUrl = this.image
+        this.takeImage()
     },
   },
   mounted(){
-    this.imaegUrl = this.image
+    this.takeImage()
   },
   methods: {
+    takeImage(){
+      if(!this.image) return
+      !this.multiple ?(this.imaegList =[{image:this.image}]):(this.imaegList = this.image)
+    },
+    delImg(path){
+      this.$emit('delImg',{
+        path: path,
+        num:this.num
+      })
+    },
     fileShow(){
       document.querySelector('#fileinp'+this.num).click()
     },
     fileChange(e){
       let files = e.target.files || e.dataTransfer.files,that =this;
-      that.imageDeal(files[0],function(file1) {
-        that.uploadfile(file1)
+      let formdata = new FormData();
+      if(this.multiple){
+        let x = 0,len = files.length;
+        for (let i = 0; i < len; i++) {
+            imageDeal(files[i], function(file) {
+                x++
+                formdata.append('images[]', file)
+            })
+        }
+        let interval = setInterval(function() {
+            if (len === x) {
+                clearInterval(interval)
+                that.uploadmultifile(formdata)
+            }
+        }, 100)
+      }else{
+        imageDeal(files[0],function(file) {
+          formdata.append('image', file);
+          that.uploadfile(formdata)
+        })
+      }
+      
+    },
+    uploadmultifile(formdata){
+      let that = this;
+      that.$request({
+        data: formdata,
+        url: 'upload/uploadmultifile',
+        success(res){
+           let data = res.data;
+           for(let i=0,len=data.length;i<len;i++){
+             that.imaegList.push({
+                image: data[i]
+              })
+           }
+           that.$emit('upresult',{
+            image_path: res.data,
+            num:that.num
+          })
+        },
+        complete(res){
+            document.querySelector('#fileinp'+that.num).value = ''
+        },
+        error(){
+          that.$emit('upresult',{num:that.num})
+        }
       })
     },
-    uploadfile(file){
-      let that = this,formdata = new FormData();
-      formdata.append('image', file);
+    uploadfile(formdata){
+      let that = this;
       that.$request({
         data: formdata,
         url: 'upload/uploadfile',
         success(res){
-          console.log(that.num)
-           that.imaegUrl = res.image_path || ''
-           that.$emit('upresult',{
+          that.imaegList =[{image:res.image_path}]
+          that.$emit('upresult',{
             image_path: res.image_path,
             num:that.num
           })
@@ -55,62 +115,6 @@ export default {
         }
       })
     },
-    imageDeal(files, returnBase64) {
-        //获取file，转成base64	
-        let that =this
-        var file = files;
-        //取传入的第一个文件
-        //如果未找到文件，结束函数，跳出			
-        if (undefined == file) return;
-        
-        if (file.size <= 1048576) {
-            returnBase64(file)
-            return
-        }
-        var r = new FileReader();
-        r.readAsDataURL(file);
-        r.onload = function(e) {
-            var base64 = e.target.result;
-            var bili = 1.5;
-            console.log("压缩前：" + base64.length);
-            that.suofang(base64, bili, returnBase64);
-        }
-    },
-    suofang(base64, bili, callback) {
-        console.log("执行缩放程序,bili=" + bili); //处理缩放，转格式	
-        var _img = new Image();
-        let that =this;
-        _img.src = base64;
-        _img.onload = function() {
-            var _canvas = document.createElement("canvas");
-            var w = this.width / bili;
-            var h = this.height / bili;
-            _canvas.setAttribute("width", w);
-            _canvas.setAttribute("height", h);
-            _canvas.getContext("2d").drawImage(this, 0, 0, w, h);
-            var base64 = _canvas.toDataURL("image/jpeg");
-            _canvas.toBlob(function(blob) {
-                if (blob.size > 1024 * 1024) {
-                    suofang(base64, bili, callback);
-                } else {
-                    let m = parseInt(Math.random() * 100000)
-                    let file = that.dataURLtoFile(base64, m + '.jpg')
-                    callback(blob, file);
-                }
-            }, "image/jpeg");
-        }
-    },
-    dataURLtoFile(dataurl, filename) { //将base64转换为文件
-        var arr = dataurl.split(','),
-            mime = arr[0].match(/:(.*?);/)[1],
-            bstr = atob(arr[1]),
-            n = bstr.length,
-            u8arr = new Uint8Array(n);
-        while (n--) {
-            u8arr[n] = bstr.charCodeAt(n);
-        }
-        return new File([u8arr], filename, { type: mime });
-    }
 
   }
 }
@@ -139,6 +143,28 @@ export default {
   height: 60px;
   display: block;
   cursor: pointer;
+}
+.imgList{
+
+}
+.imgli{
+  position: relative;
+  display: inline-block;
+  padding: 0 10px;
+  float: left;
+}
+.imgDel{
+  position: absolute;
+  top: 0;
+  right: 10px;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  margin-right: 0;
+  cursor: pointer;
+  color: #000;
+  font-weight: bold;
 }
 .add{
   margin-bottom: 20px;

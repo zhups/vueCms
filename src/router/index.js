@@ -30,7 +30,10 @@ const orderDetails = r => require.ensure([], () => r(require('../components/page
 
 
 const goodsList = r => require.ensure([], () => r(require('../components/page/goods/goodsList')), 'goodsList')
+const goodDetails = r => require.ensure([], () => r(require('../components/page/goods/goodDetails')), 'goodDetails')
 const supplier = r => require.ensure([], () => r(require('../components/page/goods/supplier')), 'supplier')
+const courier = r => require.ensure([], () => r(require('../components/page/goods/courier')), 'courier')
+const freight = r => require.ensure([], () => r(require('../components/page/goods/freight')), 'freight')
 const goodsclassify = r => require.ensure([], () => r(require('../components/page/goods/goodsclassify')), 'goodsclassify')
 const specifications = r => require.ensure([], () => r(require('../components/page/goods/specifications')), 'specifications')
 const subject = r => require.ensure([], () => r(require('../components/page/goods/subject')), 'subject')
@@ -121,8 +124,17 @@ export default new Router({
             path: '/goodsList',
             component: goodsList
         }, {
+            path: '/goodsList/goodDetails',
+            component: goodDetails
+        }, {
             path: '/supplier',
             component: supplier
+        }, {
+            path: '/supplier/courier',
+            component: courier
+        }, {
+            path: '/supplier/freight',
+            component: freight
         }, {
             path: '/goodsclassify',
             component: goodsclassify
