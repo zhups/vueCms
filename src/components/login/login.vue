@@ -3,11 +3,11 @@
     <el-card class="box-card">
       <img class="logImg" src="https://webimages.pzlive.vip/776logo.png" alt="">
       <el-form  label-position="top" label-width="80px" :model="userinfo" ref='login'>
-        <el-form-item prop="user" label="账号:" :rules="[{ required: true, message: '请输入手机号', trigger: 'blur' }]">
-          <el-input placeholder="手机号" v-model="userinfo.user"></el-input>
+        <el-form-item prop="user" label="账号:" :rules="[{ required: true, message: '请输入账号', trigger: 'blur' }]">
+          <el-input placeholder="请输入账号" @keyup.enter.native="submitForm('login')" v-model="userinfo.user"></el-input>
         </el-form-item>
         <el-form-item prop="pwd" label="密码:" :rules="[{ required: true, message: '请输入密码', trigger: 'blur' }]"> 
-          <el-input placeholder="请输入密码" v-model="userinfo.pwd" type="password"></el-input>
+          <el-input placeholder="请输入密码" @keyup.enter.native="submitForm('login')" v-model="userinfo.pwd" type="password"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button class="btn" type="primary" @click="submitForm('login')">登录</el-button>
