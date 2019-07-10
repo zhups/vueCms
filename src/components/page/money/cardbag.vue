@@ -3,7 +3,7 @@
     <div class="table-header clearfix">
       <el-breadcrumb class="breadcrumb"  separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>金融管理</el-breadcrumb-item>
-        <el-breadcrumb-item>开通boss</el-breadcrumb-item>
+        <el-breadcrumb-item>卡包</el-breadcrumb-item>
       </el-breadcrumb>
   </div>
 
@@ -28,7 +28,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <v-pagination @pageChange="pageChange" :total="total"></v-pagination>
+    <v-pagination @pageChange="pageChange" :num='num' :total="total"></v-pagination>
 
     <div class="cen-card" v-if="card">
       <el-card class="box-card" >
@@ -64,6 +64,7 @@ import vPagination from '../../component/pagination'
 export default {
   data(){
     return {
+      num:1,
       card:false,
       errCard:{},
       options:['1'],
@@ -180,6 +181,7 @@ export default {
     onQuery(screen){
       this.screen = screen
       this.screen.page = 1
+      this.num++;
       this.getUserBank()
     },
     pageChange(obj){

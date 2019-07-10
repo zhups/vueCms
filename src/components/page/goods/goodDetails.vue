@@ -774,6 +774,8 @@ export default {
 .pl-li {
     position: relative;
     width: 20%;
+    min-width: 100px;
+    max-width: 300px;
     height: auto;
     padding: 10px;
     margin-right: 10px;
@@ -793,6 +795,10 @@ export default {
 }
 .pl-image {
     width: 100%;
+    min-height: 50px;
+}
+.trpl .pl-image{
+  display: none;
 }
 .pl-manage {
     position: absolute;
@@ -834,7 +840,6 @@ export default {
   width: 100%;
 }
 .infoList::-webkit-scrollbar-thumb {
-  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
   background: rgba(0, 0, 0, 0.2);
 }
 </style>

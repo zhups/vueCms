@@ -23,7 +23,7 @@
       <el-table-column  prop="update_time" label="最后更新时间" ></el-table-column>
       <el-table-column  prop="statusText" label="状态" ></el-table-column>
     </el-table>
-    <v-pagination @pageChange="pageChange" :total="total"></v-pagination>
+    <v-pagination @pageChange="pageChange" :num='num' :total="total"></v-pagination>
 
   </div>
 </template>
@@ -34,6 +34,7 @@ import vPagination from '../../component/pagination'
 export default {
   data(){
     return {
+      num:1,
       screen:{
         page:1,
         page_num:10
@@ -72,6 +73,7 @@ export default {
     onQuery(screen){
       this.extend(this.screen,screen);
       this.screen.page = 1;
+      this.num++;
       this.getDiamondvipNetPush();
     },
     extend(target, options) {

@@ -36,10 +36,12 @@ const courier = r => require.ensure([], () => r(require('../components/page/good
 const freight = r => require.ensure([], () => r(require('../components/page/goods/freight')), 'freight')
 const goodsclassify = r => require.ensure([], () => r(require('../components/page/goods/goodsclassify')), 'goodsclassify')
 const specifications = r => require.ensure([], () => r(require('../components/page/goods/specifications')), 'specifications')
+const attribute = r => require.ensure([], () => r(require('../components/page/goods/attribute')), 'attribute')
 const subject = r => require.ensure([], () => r(require('../components/page/goods/subject')), 'subject')
 
 const bossShare = r => require.ensure([], () => r(require('../components/page/activity/bossShare')), 'bossShare')
 const offline = r => require.ensure([], () => r(require('../components/page/activity/offline')), 'offline')
+const offlineGoods = r => require.ensure([], () => r(require('../components/page/activity/offlineGoods')), 'offlineGoods')
 const lucky = r => require.ensure([], () => r(require('../components/page/activity/lucky')), 'lucky')
 
 const homePage = r => require.ensure([], () => r(require('../components/page/advertising/homePage')), 'homePage')
@@ -142,6 +144,9 @@ export default new Router({
             path: '/specifications',
             component: specifications
         }, {
+            path: '/specifications/attribute',
+            component: attribute
+        }, {
             path: '/subject',
             component: subject
         }, {
@@ -150,6 +155,9 @@ export default new Router({
         }, {
             path: '/offline',
             component: offline
+        }, {
+            path: '/offline/offlineGoods',
+            component: offlineGoods
         }, {
             path: '/lucky',
             component: lucky

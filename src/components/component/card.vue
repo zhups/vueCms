@@ -5,8 +5,8 @@
             <span>{{cName}}</span>
           </div>
         <el-form :label-width="cWidth+'px'" :model="cRuleForm" ref="cRuleForm"  :rules="cRules">
-          <el-form-item v-for="(v,k) of cRuleType" :key="k" :label="v.label" :prop="k" v-if="!v.hide" >
-
+          
+          <el-form-item v-for="(v,k) of cRuleType" :key="k" :label="v.label" :prop="k" v-show="!v.hdplay" >
             <el-input v-if="v.type === 'input'" v-model="cRuleForm[k]" :type='v.inpType || "text"' :placeholder="v.placeholder"></el-input>
             
             <el-input v-if="v.type === 'number'" v-model.number="cRuleForm[k]" type='number' :placeholder="v.placeholder"></el-input>
@@ -17,7 +17,9 @@
             </el-select>
 
             <el-cascader v-if="v.type === 'cascader'" :options="v.option"  :props="v.props"  v-model="cRuleForm[k]" :show-all-levels="v.levels" :filterable="v.filterable" :collapse-tags="v.collapse" :clearable="v.clearable" ></el-cascader>
-           
+
+            <el-date-picker v-if="v.type === 'date'" v-model="cRuleForm[k]" type="datetime"  value-format="yyyy-MM-dd HH:mm:ss" :placeholder="v.placeholder" default-time="00:00:00"></el-date-picker>
+
             <v-upload v-if="v.type === 'image'" @upresult='upresult' :num='k' :image="cRuleForm[k]"></v-upload>
 
             <p class="chart" v-if="v.type === 'p'">{{cRuleForm[k]}}</p>
@@ -55,7 +57,6 @@ export default {
     },
     'ruleType':function(newVal){
         this.cRuleType = this.ruleType
-        console.log('1',this.cRuleType)
     },
     'ruleForm': function(newVal){
         this.cRuleForm = JSON.parse(JSON.stringify(this.ruleForm)) 
@@ -68,6 +69,7 @@ export default {
     this.cName = this.name;
     this.cWidth = this.width || 80;
     this.cRuleType = this.ruleType;
+    console.log(this.cRuleType)
     this.cRuleForm = JSON.parse(JSON.stringify(this.ruleForm))
     this.disrules()
     
@@ -89,12 +91,6 @@ export default {
           message:this.cRuleType[rules[i]].placeholder,
           trigger:trigger
         })
-        // if(this.cRuleType[rules[i]].type === 'number'){
-        //   this.cRules[rules[i]].push({
-        //     type: 'number', 
-        //     message: '输入值必须为数字值'
-        //   })
-        // }
       }
     },
     getType(str){

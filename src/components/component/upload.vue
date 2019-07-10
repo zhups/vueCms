@@ -102,6 +102,7 @@ export default {
         url: 'upload/uploadfile',
         success(res){
           that.imaegList =[{image:res.image_path}]
+          console.log(that.imaegList)
           that.$emit('upresult',{
             image_path: res.image_path,
             num:that.num

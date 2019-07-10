@@ -3,7 +3,7 @@
     <div class="table-header clearfix">
       <el-breadcrumb class="breadcrumb"  separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>订单管理</el-breadcrumb-item>
-        <el-breadcrumb-item>商品订单列表</el-breadcrumb-item>
+        <el-breadcrumb-item>权益购买订单</el-breadcrumb-item>
       </el-breadcrumb>
   </div>
 

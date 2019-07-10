@@ -3,7 +3,7 @@
     <div class="table-header clearfix">
       <el-breadcrumb class="breadcrumb"  separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>金融管理</el-breadcrumb-item>
-        <el-breadcrumb-item>佣金提现</el-breadcrumb-item>
+        <el-breadcrumb-item>奖励金提现</el-breadcrumb-item>
       </el-breadcrumb>
   </div>
 
@@ -26,7 +26,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <v-pagination @pageChange="pageChange" :total="total"></v-pagination>
+    <v-pagination @pageChange="pageChange" :num='num' :total="total"></v-pagination>
 
     <v-card name='提现' :cardStatus="cardStatus" :ruleType="ruleType" :ruleForm="ruleForm" :rules="rules" @sumbit="sumbit" @hideCard="hideCard"></v-card>
 
@@ -40,6 +40,7 @@ import vCard from '../../component/card'
 export default {
   data(){
     return {
+      num:1,
       cardStatus:false,
       ruleForm:{},
       rules:['message'],
@@ -119,6 +120,7 @@ export default {
     onQuery(screen){
       this.extend(this.screen,screen);
       this.screen.page = 1;
+      this.num++
       this.getLogTransfer();
     },
     extend(target, options) {

@@ -3,39 +3,27 @@
     <div class="table-header clearfix">
       <el-breadcrumb class="breadcrumb"  separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>商品管理</el-breadcrumb-item>
-        <el-breadcrumb-item>商品分类</el-breadcrumb-item>
+        <el-breadcrumb-item>商品规格</el-breadcrumb-item>
       </el-breadcrumb>
-      <el-button class="add fr" type="primary" icon="el-icon-plus" @click="showCard()">添加商品</el-button>
+      <el-button class="add fr" type="primary" icon="el-icon-plus" @click="showCard()">添加规格</el-button>
   </div>
 
     <v-screen :screen="screenQuery" @query="onQuery" ></v-screen>
 
-    <el-table :data="goodslist" border style="width: 100%">
-      <el-table-column prop="id" label="ID"></el-table-column>
-      <el-table-column  prop="image" label="图片" >
-        <template slot-scope="scope">
-          <img :src="scope.row.image" width="40"  class="head_pic"/>
-        </template>
-      </el-table-column>
-      <el-table-column  prop="goods_name" label="商品名称" ></el-table-column>
-      <el-table-column  prop="subtitle" label="商品标题" ></el-table-column>
-      <el-table-column  prop="supplier" label="前端供应商名称" ></el-table-column>
-      <el-table-column  prop="supplier_title" label="后端供应商名称" ></el-table-column>
-      <el-table-column  prop="cate" label="分类名称" ></el-table-column>
-      <el-table-column  prop="status" label="状态" >
-        <template slot-scope="scope">
-          <el-switch v-model="scope.row.status" @change="statusChange(scope.row.id,scope.row.status)" :active-value="1" :inactive-value="2"></el-switch>
-        </template>
-      </el-table-column>
+    <el-table :data="specList" border style="width: 100%">
+      <el-table-column type="index" label="序号"></el-table-column>
+      <el-table-column  prop="category" label="三级分类" ></el-table-column>
+      <el-table-column  prop="spe_name" label="规格名称" ></el-table-column>
       <el-table-column fixed="right" label="操作"  width="350">
         <template slot-scope="scope">
-          <el-button type="primary" size="small" @click="gogoodslInfo(scope.row.id)">编辑</el-button>
+          <el-button type="primary" size="small" @click="goAttribute(scope.row.id)">查看属性</el-button>
+          <el-button type="primary" size="small" @click="getEditData(scope.row.id)">编辑</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <v-pagination @pageChange="pageChange" :total="total"></v-pagination>
+    <v-pagination @pageChange="pageChange" :num='num' :total="total"></v-pagination>
 
-    <v-card name='添加商品基本信息' width="100" :cardStatus="cardStatus" :ruleType="ruleType" :ruleForm="ruleForm" :rules="rules" @sumbit="sumbit" @hideCard="hideCard"></v-card>
+    <v-card name='商品规格' width="100" :cardStatus="cardStatus" :ruleType="ruleType" :ruleForm="ruleForm" :rules="rules" @sumbit="sumbit" @hideCard="hideCard"></v-card>
 
   </div>
 </template>
@@ -47,31 +35,15 @@ import vCard from '../../component/card'
 export default {
   data(){
     return {
+      num:1,
       cardStatus:false,
       ruleForm:{},
-      rules:['goods_name','supplier_id','cate_id','image'],
-      ruleType:{
-        'goods_name':{
-          type:'input',
-          label:'商品名称',
-          placeholder:'请输入商品名称'
-        },
-        'subtitle':{
-          type:'input',
-          inpType:'textarea',
-          label:'商品标题',
-          placeholder:'请输入商品标题'
-        },
-        'supplier_id':{
-          type:'select',
-          label:'供应商',
-          placeholder:'请选择供应商',
-          filterable:true,
-          val:'id',
-          lab:'name',
-          option:[]
-        },
-        'cate_id':{
+      rules:[],
+      aRules:['top_id','sa_name'],
+      cRules:['spe_name'],
+      ruleType:{},
+      aRuleType:{
+        'top_id':{
           type:'cascader',
           label:'三级分类',
           placeholder:'请选择三级分类',
@@ -83,10 +55,17 @@ export default {
           },
           option:[]
         },
-        'image':{
-          type:'image',
-          label:'产品标题图',
-          placeholder:'请上传图片'
+        'sa_name':{
+          type:'input',
+          label:'规格名称',
+          placeholder:'请输入规格名称'
+        }
+      },
+      cRuleType:{
+        'spe_name':{
+          type:'input',
+          label:'规格名称',
+          placeholder:'请输入规格名称'
         }
       },
       screen:{
@@ -94,40 +73,13 @@ export default {
         page_num:10
       },
       screenQuery:[{
-        ref:'goods_name',
-        label:'商品名称',
-        placeholder:'请输入商品名称',
+        ref:'type_name',
+        label:'分类名称',
+        placeholder:'请输入分类名称',
         type:'input',
         content:'',
-      },{
-        ref:'supplier_name',
-        label:'前端供应商名称',
-        type:'input',
-        content:'',
-        placeholder:'请输入前端供应商名称'
-      },{
-        ref:'supplier_title',
-        label:'后端供应商名称',
-        type:'input',
-        content:'',
-        placeholder:'请输入后端供应商名称'
-      },{
-        ref:'status',
-        label:'状态',
-        type:'select',
-        content:'',
-        option:[{
-            value: '',
-            label: '全部'
-        }, {
-            value: 1,
-            label: '已上架'
-        }, {
-            value: 2,
-            label: '已下架'
-        }]
       }],
-      goodslist:[],
+      specList:[],
       total:0
     }
   },
@@ -137,64 +89,59 @@ export default {
       vCard
   },
   mounted(){
-    this.getgoodslist()
-    this.getAllSuppliers()
+    this.getSpecList()
     this.getAllCateList()
   },
   methods: {
-    getAllSuppliers(){
-      let that =this;
-      that.$request({
-        url: 'suppliers/getsuppliersall',
-        success(res){
-          that.ruleType['supplier_id'].option = res.data || []
-        }
-      })
-    },
     getAllCateList(){
       let that =this;
       that.$request({
         url: 'category/allCateList',
         success(res){
-          that.ruleType['cate_id'].option = res.data || []
+          that.aRuleType['top_id'].option = res.data || []
         }
       })
     },
-    gogoodslInfo(id){
-      this.$router.push({ path: '/goodsList/goodDetails', query:{
+    goAttribute(id){
+      this.$router.push({ path: '/specifications/attribute', query:{
         id:id
       } })
     },
+    getEditData(id){
+      let that =this;
+      that.$request({
+        data: {
+          id:id,
+          type:1
+        },
+        url: 'spec/getEditData',
+        success(res){
+          that.ruleType = that.cRuleType
+          that.rules = that.cRules
+          that.ruleForm = res.spec || {}
+          that.cardStatus = true
+        }
+      })
+    },
     showCard(){
       this.ruleForm = {}
+      this.ruleType = this.aRuleType
+      this.rules = this.aRules
       this.cardStatus = true
     },
     hideCard(){
       this.cardStatus = false
     },
-    statusChange(id,status){
-      let that =this;
-      that.$request({
-        data: {
-          id:id,
-          type:status
-        },
-        form:3,
-        url: 'goods/updowngoods',
-        error(){
-          that.getgoodslist()
-        }
-      })
-    },
     sumbit(data){
       let that =this;
+      data.ruleForm.type = 1
       that.$request({
         data: data.ruleForm,
-        url: 'goods/saveaddgoods',
+        url: 'spec/savespecattr',
         form:1,
         success(res){
           that.ruleForm = {}
-          that.getgoodslist()
+          that.getSpecList()
           that.cardStatus = false
         }
       })
@@ -202,7 +149,8 @@ export default {
     onQuery(screen){
       this.extend(this.screen,screen);
       this.screen.page = 1;
-      this.getgoodslist();
+      this.num++
+      this.getSpecList();
     },
     extend(target, options) {
         for (name in options) {
@@ -212,15 +160,15 @@ export default {
     },
     pageChange(obj){
         this.screen.page = obj.page
-        this.getgoodslist()
+        this.getSpecList()
     },
-    getgoodslist(){
+    getSpecList(){
       let that =this;
       that.$request({
         data: that.screen,
-        url: 'goods/getgoodslist',
+        url: 'spec/getSpecList',
         success(res){
-          that.goodslist = res.data
+          that.specList = res.data
           that.total = res.total || 0;
         }
       })

@@ -19,7 +19,7 @@
       <el-table-column  prop="message" label="描述" ></el-table-column>
       <el-table-column  prop="create_time" label="创建时间" ></el-table-column>
     </el-table>
-    <v-pagination @pageChange="pageChange" :total="total"></v-pagination>
+    <v-pagination @pageChange="pageChange" :num='num' :total="total"></v-pagination>
 
     <v-card name='充值管理' width="120" :cardStatus="cardStatus" :ruleType="ruleType" :ruleForm="ruleForm" :rules="rules" @sumbit="sumbit" @hideCard="hideCard"></v-card>
 
@@ -35,6 +35,7 @@ import vCard from '../../component/card'
 export default {
   data(){
     return {
+      num:1,
       cardStatus:false,
       ruleForm:{},
       rules:['nick_name','mobile','money'],
@@ -114,6 +115,7 @@ export default {
     onQuery(screen){
       this.screen = screen
       this.screen.page = 1
+      this.num++;
       this.getopenbosslist()
     },
     getopenbosslist(){

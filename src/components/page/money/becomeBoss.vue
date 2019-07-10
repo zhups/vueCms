@@ -29,7 +29,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <v-pagination @pageChange="pageChange" :total="total"></v-pagination>
+    <v-pagination @pageChange="pageChange" :num='num' :total="total"></v-pagination>
 
   </div>
 </template>
@@ -41,6 +41,7 @@ import vPagination from '../../component/pagination'
 export default {
   data(){
     return {
+      num:1,
       screen:{},
       screenQuery:[{
         ref:'refe_uname',
@@ -124,6 +125,7 @@ export default {
     onQuery(screen){
       this.screen = screen
       this.screen.page = 1
+      this.num++
       this.getShopApplyList()
     },
     pageChange(obj){

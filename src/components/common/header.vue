@@ -49,10 +49,11 @@
         methods:{
             quitlogin(){
               localStorage.setItem("sup_con_id",'')
-              this.$router.push({ path: 'login' })
+              console.log(this.$router)
+              this.$router.push({ path: '/login' })
             },
             modifyPwd(){
-              this.$router.push({ path: 'modifyPwd' })
+              this.$router.push({ path: '/modifyPwd' })
             }
         }
     }

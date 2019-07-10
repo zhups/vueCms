@@ -62,7 +62,7 @@
                 </template>
                 <el-menu-item index="/bossShare">BOSS分享钻石卡</el-menu-item>
                 <el-menu-item index="/offline">线下活动</el-menu-item>
-                <el-menu-item index="/lucky">抽奖互动</el-menu-item>
+                <el-menu-item index="/lucky">抽奖活动</el-menu-item>
             </el-submenu>
             <el-submenu index="8">
                 <template slot="title">

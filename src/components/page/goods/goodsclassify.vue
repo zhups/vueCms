@@ -42,7 +42,7 @@ export default {
           type:'cascader',
           label:'上级分类',
           placeholder:'请选择上级分类',
-          hide:true,
+          hdplay:true,
           props:{
             value:'id',
             label:'type_name',
@@ -84,7 +84,7 @@ export default {
   methods: {
     showCard(){
       this.ruleForm = {}
-      this.ruleType['pid'].hide = false
+      this.ruleType['pid'].hdplay = false
       this.cardStatus = true
     },
     hideCard(){
@@ -142,7 +142,7 @@ export default {
         url: 'category/editcatepage',
         success(res){
           that.ruleForm = res.cate_data || {}
-          that.ruleType['pid'].hide = true
+          that.ruleType['pid'].hdplay = true
           that.cardStatus = true
         }
       })

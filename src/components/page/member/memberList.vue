@@ -25,7 +25,7 @@
       <el-table-column  prop="create_time" label="注册时间" ></el-table-column>
       <el-table-column  prop="last_time" label="最后登录时间" ></el-table-column>
     </el-table>
-    <v-pagination @pageChange="pageChange" :total="total"></v-pagination>
+    <v-pagination @pageChange="pageChange" :num='num' :total="total"></v-pagination>
 
   </div>
 </template>
@@ -37,6 +37,7 @@ import vPagination from '../../component/pagination'
 export default {
   data(){
     return {
+      num:1,
       screen:{
         page:1,
         page_num:10
@@ -63,6 +64,7 @@ export default {
     onQuery(screen){
       this.extend(this.screen,screen);
       this.screen.page = 1;
+      this.num++
       this.getUsers();
     },
     extend(target, options) {

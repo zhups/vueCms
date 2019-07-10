@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  props: ['total'],
+  props: ['total','num'],
   data(){
     return {
       vTotal:0
@@ -16,6 +16,9 @@ export default {
     'total': function(newVal){
         this.$refs.pagination.internalCurrentPage = 1;
         this.vTotal = this.total
+    },
+    'num': function(newVal){
+        this.$refs.pagination.internalCurrentPage = 1;
     }
   },
   mounted(){

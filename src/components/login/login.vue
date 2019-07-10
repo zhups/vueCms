@@ -2,15 +2,15 @@
   <div class="login">
     <el-card class="box-card">
       <img class="logImg" src="https://webimages.pzlive.vip/776logo.png" alt="">
-      <el-form  label-position="top" label-width="80px" :model="userinfo">
-        <el-form-item label="账号:">
+      <el-form  label-position="top" label-width="80px" :model="userinfo" ref='login'>
+        <el-form-item prop="user" label="账号:" :rules="[{ required: true, message: '请输入手机号', trigger: 'blur' }]">
           <el-input placeholder="手机号" v-model="userinfo.user"></el-input>
         </el-form-item>
-        <el-form-item label="密码:">
+        <el-form-item prop="pwd" label="密码:" :rules="[{ required: true, message: '请输入密码', trigger: 'blur' }]"> 
           <el-input placeholder="请输入密码" v-model="userinfo.pwd" type="password"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button class="btn" type="primary" @click="submitForm()">登录</el-button>
+          <el-button class="btn" type="primary" @click="submitForm('login')">登录</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -32,49 +32,37 @@ export default {
 
   },
   methods: {      
-    submitForm(){
-      if(!this.userinfo.user)  {
-        this.$message({message:'账号不能为空',type:'error' });
-        return
-        }
-      if(!this.userinfo.pwd) {
-        this.$message({message:'密码不能为空',type:'error' });
-        return
-      } 
+    submitForm(formName){
       let that =this;
-      that.$request({
-        url:'admin/login',
-        login:true,
-        data:{
-          admin_name:that.userinfo.user,
-          passwd:that.userinfo.pwd
-        },
-        success:function(res){
-            localStorage.setItem("cms_con_id",res.cms_con_id)
-            that.$router.push({ path: '/index' })
-        },
-        error(code){
-          let text = '';
-          switch(parseInt(code)){
-            case 3001:
-              text = '账号密码不能为空';
-              break;
-            case 3002:
-              text = '用户不存在';
-              break;
-            case 3003:
-              text = '密码错误';
-              break;
-            case 3004:
-              text = '登录失败';
-              break;
-            default:
-              text = '意料之外的错误';
-              break
+      this.$refs[formName].validate((valid) => {
+          if (valid) {
+            that.$request({
+              url:'admin/login',
+              login:true,
+              data:{
+                admin_name:that.userinfo.user,
+                passwd:that.userinfo.pwd
+              },
+              success:function(res){
+                  localStorage.setItem("cms_con_id",res.cms_con_id)
+                  that.$router.push({ path: '/index' })
+              }
+            })
+          } else {
+            console.log('error submit!!');
+            return false;
           }
-          that.$message({message:text,type:'error' });
-        }
-      })
+      });
+      // if(!this.userinfo.user)  {
+      //   this.$message({message:'账号不能为空',type:'error' });
+      //   return
+      //   }
+      // if(!this.userinfo.pwd) {
+      //   this.$message({message:'密码不能为空',type:'error' });
+      //   return
+      // } 
+      
+      
     }
   }
 }

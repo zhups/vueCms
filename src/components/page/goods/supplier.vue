@@ -28,7 +28,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <v-pagination @pageChange="pageChange" :total="total"></v-pagination>
+    <v-pagination @pageChange="pageChange" :num='num' :total="total"></v-pagination>
 
     <v-card name='供应商' width="120" :cardStatus="cardStatus" :ruleType="ruleType" :ruleForm="ruleForm" :rules="rules" @sumbit="sumbit" @hideCard="hideCard"></v-card>
 
@@ -42,6 +42,7 @@ import vCard from '../../component/card'
 export default {
   data(){
     return {
+      num:1,
       cardStatus:false,
       ruleForm:{},
       rules:['name','image','tel','title','desc'],
@@ -153,6 +154,7 @@ export default {
     onQuery(screen){
       this.extend(this.screen,screen);
       this.screen.page = 1;
+      this.num++
       this.getsuppliers();
     },
     extend(target, options) {

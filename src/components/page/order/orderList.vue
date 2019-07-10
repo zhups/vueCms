@@ -27,7 +27,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <v-pagination @pageChange="pageChange" :total="total"></v-pagination>
+    <v-pagination @pageChange="pageChange" :num='num' :total="total"></v-pagination>
 
   </div>
 </template>
@@ -42,6 +42,7 @@ export default {
         page:1,
         page_num:10
       },
+      num:1,
       screenQuery:[{
         ref:'order_no',
         label:'订单号',
@@ -115,6 +116,7 @@ export default {
     onQuery(screen){
       this.extend(this.screen,screen);
       this.screen.page = 1;
+      this.num++;
       this.getOrders();
     },
     extend(target, options) {
